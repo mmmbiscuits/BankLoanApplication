@@ -67,8 +67,7 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         if loanApplication == nil {
             loanApplication = DraftLoanApplication()
         }
-        
-        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(cancelButtonPressed))
         populateTextFields()
     }
     

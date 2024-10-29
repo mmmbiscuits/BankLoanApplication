@@ -33,12 +33,11 @@ class LoanApplicationSummaryViewController: UIViewController {
         // Do any additional setup after loading the view.
         submitButtonOutlet.isHidden = summaryState
 
-        if loanApplication?.uuid != nil && loanApplication?.submittedDate == nil {
+        if summaryState && loanApplication?.submittedDate == nil {
             self.navigationItem.rightBarButtonItems = [UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(editButtonPressed))]
             
         } else {
-            self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
-        }
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(cancelButtonPressed))        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

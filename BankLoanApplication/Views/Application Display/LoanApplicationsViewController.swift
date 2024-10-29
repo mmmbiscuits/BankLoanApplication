@@ -167,7 +167,7 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
             let fetchRequest = LoanApplication.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "uuid == %@", loanApplicationUUID.uuidString)
             
-            var matches = try container.viewContext.fetch(fetchRequest)
+            let matches = try container.viewContext.fetch(fetchRequest)
             
             var loanApplication: LoanApplication?
             

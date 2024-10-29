@@ -26,7 +26,7 @@ func validateLoanRatio(income: String?, loanAmount: String?, loanToIncomeRatio: 
     }
     
     if !isLoanRatioValid(income: incomeDouble, loanAmount: loanAmountDouble, loanToIncomeRatio: loanToIncomeRatio) {
-        throw ValidationError(message: "Loan amount must be less than income x loan to income ratio")
+        throw ValidationError(message: "Loan amount must be less than (\(loanToIncomeRatio) x Annual Income)")
     }
     
 }

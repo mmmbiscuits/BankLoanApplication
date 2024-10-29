@@ -33,7 +33,7 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
         loanAmountTextField.delegate = self
         irdNumberTextField.delegate = self
         
-        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(cancelButtonPressed))
         populateTextFields()
     }
     
