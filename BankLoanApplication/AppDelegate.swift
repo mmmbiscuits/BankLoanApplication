@@ -11,10 +11,20 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let myColor = UIColor.brandBlue
+        
+        let barAppearance = UINavigationBarAppearance()
+        barAppearance.backgroundColor = myColor
+        barAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        barAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+
+        let navigationBar = UINavigationBar.appearance()
+        navigationBar.standardAppearance = barAppearance
+        navigationBar.scrollEdgeAppearance = barAppearance // for scrollable content or large titles
+        
         return true
     }
 
