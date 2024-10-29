@@ -198,6 +198,7 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
                 let existingLoanApplication = fetchedResultsController.object(at: indexPath)
                 let nonCoredataVersion = DraftLoanApplication(loanApplication: existingLoanApplication)
                 summaryDestination.loanApplication = nonCoredataVersion
+                summaryDestination.summaryState = true
             }
         }
         if let newApplicationDestination = segue.destination as? LoanApplicantDetailsViewController {

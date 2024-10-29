@@ -39,6 +39,13 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         loanApplication?.gender = genderTextField.text
         loanApplication?.address = addressTextField.text
     }
+    func populateTextFields() {
+        fullNameTextField.text = loanApplication?.fullName
+        emailTextField.text = loanApplication?.email
+        phoneNumberTextField.text = loanApplication?.phoneNumber
+        genderTextField.text = loanApplication?.gender
+        addressTextField.text = loanApplication?.address
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,8 +69,9 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         }
         
         self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
-        
+        populateTextFields()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         registerForKeyboardNotifications()

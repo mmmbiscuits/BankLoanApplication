@@ -21,16 +21,28 @@ class LoanApplicationSummaryViewController: UIViewController {
     
     @IBOutlet weak var submittedDateLabel: UILabel!
     
+    @IBOutlet weak var submitButtonOutlet: UIButton!
+    
     var loanApplication: DraftLoanApplication?
+    
+    var summaryState: Bool = false
         
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Application Summary"
         // Do any additional setup after loading the view.
+        submitButtonOutlet.isHidden = summaryState
+
+        if loanApplication?.uuid != nil && loanApplication?.submittedDate == nil {
+            self.navigationItem.rightBarButtonItems = [UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(editButtonPressed))]
+            
+        } else {
+            self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        
         populateLabels()
     }
     
@@ -69,10 +81,20 @@ class LoanApplicationSummaryViewController: UIViewController {
         if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication {
             destination.saveOrUpdateLoanApplication(loanApplication, isDraft: segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue)
         }
+        
+        if let editDestination = segue.destination as? UINavigationController, let loanApplication = loanApplication {
+            if let LoanApplicationDetails = editDestination.topViewController as? LoanApplicantDetailsViewController {
+                LoanApplicationDetails.loanApplication = loanApplication
+            }
+        }
     }
     
     @IBAction func submitButtonPressed(_ sender: Any) {
         self.performSegue(withIdentifier: SegueIdentifiers.submitAndUnwindSegueIdentifier.rawValue, sender: self)
+    }
+    
+    @objc func editButtonPressed(_ sender: Any) {
+        self.performSegue(withIdentifier: "editLoanApplicationSegueID", sender: sender)
     }
 
     @objc func cancelButtonPressed(_ sender: Any) {
