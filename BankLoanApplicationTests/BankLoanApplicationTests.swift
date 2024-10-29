@@ -10,6 +10,13 @@ import Testing
 
 struct BankLoanApplicationTests {
 
+    @Test func checkHomeLoanCalculations() async throws {
+        // expected exact match
+        #expect(isLoanRatioValid(income: 100.0, loanAmount: 50.0, loanToIncomeRatio: 0.5) == true)
+        // this should fail
+        #expect(isLoanRatioValid(income: 100.0, loanAmount: 50.0, loanToIncomeRatio: 0.4) == false)
+        
+    }
     
     @Test func checkValidEmail() async throws {
         //valid
