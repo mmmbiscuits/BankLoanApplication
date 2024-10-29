@@ -24,7 +24,9 @@ func validateLoanRatio(income: String?, loanAmount: String?, loanToIncomeRatio: 
     guard let incomeDouble = Double(income), let loanAmountDouble = Double(loanAmount) else {
         throw ValidationError(message: "Income and loan amount must be numeric")
     }
-    
+    if incomeDouble < 0 || loanAmountDouble < 0 {
+        throw ValidationError(message: "Income and loan amount must be positive")
+    }
     if !isLoanRatioValid(income: incomeDouble, loanAmount: loanAmountDouble, loanToIncomeRatio: loanToIncomeRatio) {
         throw ValidationError(message: "Loan amount must be less than (\(loanToIncomeRatio) x Annual Income)")
     }
