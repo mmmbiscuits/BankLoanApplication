@@ -129,7 +129,12 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
         }
     }
     
-    func saveOrUpdateLoanApplication(_ loanApplication: DraftLoanApplication) {
+    func saveOrUpdateLoanApplication(_ loanApplication: DraftLoanApplication, isDraft: Bool) {
+        
+        if !isDraft && loanApplication.submittedDate == nil{
+            loanApplication.submittedDate = Date()
+        }
+        
         if loanApplication.uuid != nil {
             updateLoanApplicationDetails(loanApplication)
         } else {
@@ -143,7 +148,6 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
                 let contextVersion = loanApplication.populateCoreDataVersion(forContext: container.viewContext)
                 
                 contextVersion.uuid = UUID()
-                contextVersion.submittedDate = Date()
                 
                 try container.viewContext.save()
                 self.loadContent()

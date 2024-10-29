@@ -7,6 +7,7 @@
 
 enum SegueIdentifiers: String {
     case unwindAndSaveSegueIdentifier = "saveAndUnwindToListSegueID"
+    case submitAndUnwindSegueIdentifier = "submitAndUnwindToListSegueID"
     case startNewLoanApplicationSegueIdentifier = "showAddLoanFlowSegueID"
     case showLoanApplicationDetailsSegueIdentifier = "showLoanApplicationDetailsSegueID"
     case showLoanDetailsSegueIdentifier = "loanApplicationSummarySegueID"

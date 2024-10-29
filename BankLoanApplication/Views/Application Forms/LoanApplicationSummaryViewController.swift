@@ -66,13 +66,13 @@ class LoanApplicationSummaryViewController: UIViewController {
         // Pass the selected object to the new view controller.
     
         // Unwinding and saving progress
-        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
-            destination.saveOrUpdateLoanApplication(loanApplication)
+        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication {
+            destination.saveOrUpdateLoanApplication(loanApplication, isDraft: segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue)
         }
     }
     
     @IBAction func submitButtonPressed(_ sender: Any) {
-        self.performSegue(withIdentifier: SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue, sender: self)
+        self.performSegue(withIdentifier: SegueIdentifiers.submitAndUnwindSegueIdentifier.rawValue, sender: self)
     }
 
     @objc func cancelButtonPressed(_ sender: Any) {

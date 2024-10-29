@@ -109,7 +109,7 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
         }
         // Unwinding and saving progress
         if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
-            destination.saveOrUpdateLoanApplication(loanApplication)
+            destination.saveOrUpdateLoanApplication(loanApplication, isDraft: true)
         }
     }
 
