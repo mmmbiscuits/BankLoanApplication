@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoanApplicantDetailsViewController: UIViewController {
+class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
 
     @IBOutlet weak var fullNameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -17,12 +17,14 @@ class LoanApplicantDetailsViewController: UIViewController {
         
     @IBOutlet weak var validationErrorsLabel: UILabel!
     
-    
     var loanApplication: DraftLoanApplication?
     
     let genderPicker: UIPickerView = UIPickerView()
         
     @IBOutlet weak var proceedToLoanDetailsButton: UIButton!
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+//    @IBOutlet weak var nextButtonBottomSpaceConstraint: NSLayoutConstraint!
     
     var validationErrors: [Error] = []
     
@@ -38,7 +40,6 @@ class LoanApplicantDetailsViewController: UIViewController {
         super.viewDidLoad()
         self.title = "Applicant Details"
         // Do any additional setup after loading the view
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonPressed))
         
         fullNameTextField.delegate = self
         emailTextField.delegate = self
@@ -49,18 +50,31 @@ class LoanApplicantDetailsViewController: UIViewController {
         genderPicker.dataSource = self
         self.genderTextField.inputView = genderPicker
         
+        self.scrollView.delegate = self
+        self.scrollView.keyboardDismissMode = .onDrag
+                
         if loanApplication == nil {
             loanApplication = DraftLoanApplication()
         }
+        
+        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        registerForKeyboardNotifications()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardNotifications()
+    }
+            
     @IBAction func goToLoanDetailsButtonPressed(_ sender: Any) {
         if allValidationsMet() {
             self.performSegue(withIdentifier: "goToLoanDetailsSegueId", sender: nil)
         }
         displayValidationErrors()
     }
-    
     
     // MARK: - Navigation
 
@@ -76,6 +90,9 @@ class LoanApplicantDetailsViewController: UIViewController {
             destination.loanApplication = self.loanApplication
         }
         
+        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
+            destination.saveOrUpdateLoanApplication(loanApplication)
+        }
     }
     
     func allValidationsMet() -> Bool {
@@ -111,8 +128,8 @@ class LoanApplicantDetailsViewController: UIViewController {
         validationErrorsLabel.text = errorsString
     }
     
-    @objc func cancelButtonPressed () {
-        
+    @objc func cancelButtonPressed() {
+        self.presentDismissAlert()
     }
     
 }
@@ -141,9 +158,10 @@ extension LoanApplicantDetailsViewController: UIPickerViewDataSource, UIPickerVi
     }
 }
 
-extension LoanApplicantDetailsViewController: UITextFieldDelegate {
+extension LoanApplicantDetailsViewController: UITextFieldDelegate, UIScrollViewDelegate {
     //clearing any existing validation display
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        scrollView.scrollRectToVisible(textField.frame, animated: true)
         textField.displayValidity(valid: true)
         return true
     }
@@ -195,5 +213,6 @@ extension LoanApplicantDetailsViewController: UITextFieldDelegate {
         }
         return true
     }
+    
 }
  

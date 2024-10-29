@@ -19,6 +19,8 @@ class LoanApplicationSummaryViewController: UIViewController {
     @IBOutlet weak var loanAmountLabel: UILabel!
     @IBOutlet weak var irdNumberLabel: UILabel!
     
+    @IBOutlet weak var submittedDateLabel: UILabel!
+    
     var loanApplication: DraftLoanApplication?
         
     override func viewDidLoad() {
@@ -28,6 +30,7 @@ class LoanApplicationSummaryViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
         populateLabels()
     }
     
@@ -47,6 +50,12 @@ class LoanApplicationSummaryViewController: UIViewController {
             loanAmountLabel.text = "$\(loanAmount)"
         }
         irdNumberLabel.text = loanApplication.irdNumber
+        
+        if let submittedDate = loanApplication.submittedDate {
+            submittedDateLabel.text = submittedDate.formatted(date: .abbreviated, time: .shortened)
+        } else {
+            submittedDateLabel.text = "Draft"
+        }
     }
     
     // MARK: - Navigation
@@ -56,16 +65,17 @@ class LoanApplicationSummaryViewController: UIViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
     
-        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication {
-            if loanApplication.uuid == nil {
-                destination.saveLoanApplication(loanApplication)
-            } else {
-                destination.updateLoanApplicationDetails(loanApplication)
-            }
+        // Unwinding and saving progress
+        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
+            destination.saveOrUpdateLoanApplication(loanApplication)
         }
     }
     
     @IBAction func submitButtonPressed(_ sender: Any) {
-        self.performSegue(withIdentifier: "unwindToApplicationsListSegID", sender: self)
+        self.performSegue(withIdentifier: SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue, sender: self)
+    }
+
+    @objc func cancelButtonPressed(_ sender: Any) {
+        self.presentDismissAlert()
     }
 }

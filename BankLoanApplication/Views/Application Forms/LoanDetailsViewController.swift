@@ -7,7 +7,7 @@
 
 import UIKit
 
-class LoanDetailsViewController: UIViewController {
+class LoanDetailsViewController: KeyboardRespondingViewController {
 
     @IBOutlet weak var incomeTextField: UITextField!
     @IBOutlet weak var loanAmountTextField: UITextField!
@@ -31,7 +31,18 @@ class LoanDetailsViewController: UIViewController {
         loanAmountTextField.delegate = self
         irdNumberTextField.delegate = self
         
+        self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
+        
         populateTextFields()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        registerForKeyboardNotifications()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        unregisterForKeyboardNotifications()
     }
     
     func populateTextFields() {
@@ -65,11 +76,9 @@ class LoanDetailsViewController: UIViewController {
         //if all are valid
         if checkValidations() {
             populateModel()
-            self.performSegue(withIdentifier: "loanApplicationSummarySegueID", sender: nil)
+            self.performSegue(withIdentifier: SegueIdentifiers.showLoanDetailsSegueIdentifier.rawValue, sender: nil)
         }
-        
         displayValidationErrors()
-        
     }
     
     func displayValidationErrors() {
@@ -97,6 +106,10 @@ class LoanDetailsViewController: UIViewController {
         if let destination = segue.destination as? LoanApplicationSummaryViewController {
             destination.loanApplication = self.loanApplication
         }
+        // Unwinding and saving progress
+        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
+            destination.saveOrUpdateLoanApplication(loanApplication)
+        }
     }
 
     func checkValidations() -> Bool {
@@ -111,6 +124,31 @@ class LoanDetailsViewController: UIViewController {
         return validationErrors.isEmpty
     }
 
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        if textField == irdNumberTextField {
+//
+//            let txtAfterUpdate = textField.text
+//            
+//            txtAfterUpdate?.replacingCharacters(in:  RangeExpression(range: range), with: string)
+//            txtAfterUpdate?.replacingCharacters(in: range, with: string)
+//            txtAfterUpdate.replacingCharacters(in: range, with: string)
+//            
+//            let strippedString = txtAfterUpdate.replacingOccurrences(of: "-", with: "", options: .regularExpression)
+//            if let myInteger = Int(strippedString) {
+//                let myNumber = NSNumber(value:myInteger)
+//                irdNumber = myNumber
+//                let irdNumberFormatter = IRDNumberFormatter()
+//                irdNumberTextField.text = irdNumberFormatter.string(from: myNumber)
+//                return false
+//            }
+//           
+//        }
+//        return true
+//    }
+    
+    @objc func cancelButtonPressed () {
+        self.presentDismissAlert()
+    }
     
 }
 
@@ -149,3 +187,6 @@ extension LoanDetailsViewController: UITextFieldDelegate {
     }
     
 }
+
+
+
