@@ -32,5 +32,13 @@ struct BankLoanApplicationTests {
         // non number in sequence
         #expect(!isValidIRDNumber("123-4X9-678"))
     }
+    
+    @Test func checkValidPhoneNumber() async throws {
+        #expect(isValidPhoneNumber("0412345678"))
+        #expect(isValidPhoneNumber("021 25 10 111"))
+        #expect(isValidPhoneNumber("+64212510111"))
+        #expect(isValidPhoneNumber("+64 21 25 10 111"))
+
+    }
 
 }
