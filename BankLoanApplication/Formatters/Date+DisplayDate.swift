@@ -9,9 +9,9 @@
 import Foundation
 
 extension Date {
-    func shortDateDisplay() -> String {
+    func stylisedDateDisplay() -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd/MM/yyyy"
+        dateFormatter.dateFormat = "dd/MM/yyyy \n h:mm a"
         return dateFormatter.string(from: self)
     }
 }

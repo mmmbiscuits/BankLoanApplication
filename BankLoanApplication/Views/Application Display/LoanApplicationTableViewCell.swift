@@ -28,6 +28,6 @@ class LoanApplicationTableViewCell: UITableViewCell {
     func populateWithApplication(_ application: LoanApplication) {
         applicantNameLabel.text = "Applicant: " + (application.fullName ?? "Unknown")
         loanAmountLabel.text = "Loan Amount: $" + application.loanAmount.formatted()
-        submissionStateLabel.text = application.submittedDate?.shortDateDisplay() ?? "Draft"
+        submissionStateLabel.text = application.submittedDate?.stylisedDateDisplay() ?? "Draft"
     }
 }
