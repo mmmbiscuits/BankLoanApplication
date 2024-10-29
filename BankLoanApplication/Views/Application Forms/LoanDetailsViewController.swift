@@ -15,6 +15,8 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
     
     @IBOutlet weak var validationErrorsLabel: UILabel!
     
+    weak var delegate: LoanDetailsViewControllerDelegate?
+    
     private var irdNumber: NSNumber?
     
     var validationErrors: [Error] = []
@@ -32,7 +34,6 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
         irdNumberTextField.delegate = self
         
         self.navigationItem.rightBarButtonItems = [UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(cancelButtonPressed))]
-        
         populateTextFields()
     }
     
@@ -161,6 +162,12 @@ extension LoanDetailsViewController: UITextFieldDelegate {
     
     // run validation after textfield edited.
     func textFieldDidEndEditing(_ textField: UITextField) {
+        //update model
+        populateModel()
+        //delegate it back
+        if let loanApplication = loanApplication {
+            self.delegate?.updatedLoanApplication(didUpdate: loanApplication)
+        }
         
         switch textField {
 //        case incomeTextField:

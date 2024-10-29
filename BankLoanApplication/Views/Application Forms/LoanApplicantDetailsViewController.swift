@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol LoanDetailsViewControllerDelegate: AnyObject {
+    func updatedLoanApplication(didUpdate loanApplication: DraftLoanApplication)
+}
+
 class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
 
     @IBOutlet weak var fullNameTextField: UITextField!
@@ -88,6 +92,7 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         //pass it to the next view
         if let destination = segue.destination as? LoanDetailsViewController {
             destination.loanApplication = self.loanApplication
+            destination.delegate = self
         }
         
         if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
@@ -214,5 +219,12 @@ extension LoanApplicantDetailsViewController: UITextFieldDelegate, UIScrollViewD
         return true
     }
     
+}
+
+extension LoanApplicantDetailsViewController: LoanDetailsViewControllerDelegate {
+    
+    func updatedLoanApplication(didUpdate loanApplication: DraftLoanApplication) {
+        self.loanApplication = loanApplication
+    }
 }
  
