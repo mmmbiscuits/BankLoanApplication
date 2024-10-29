@@ -48,10 +48,10 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
     
     func populateTextFields() {
         if let incomeString = loanApplication?.annualIncome {
-            incomeTextField.text = String(incomeString.formatted())
+            incomeTextField.text = String(incomeString)
         }
         if let loanAmountString = loanApplication?.loanAmount {
-            loanAmountTextField.text = String(loanAmountString.formatted())
+            loanAmountTextField.text = String(loanAmountString)
         }
         
         if let irdNumber = loanApplication?.irdNumber {
