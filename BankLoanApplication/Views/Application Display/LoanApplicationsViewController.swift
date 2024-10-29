@@ -21,19 +21,18 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
         
         // Do any additional setup after loading the view.
         self.title = "Applications"
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "+", style: .plain, target: self, action: #selector(addTapped))
+                
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "note.text.badge.plus"), style: .plain, target: self, action: #selector(addTapped))
         
         container = NSPersistentContainer(name: "BankLoanApplication")
-        
         container.loadPersistentStores { (_, error) in
             self.container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             if let error {
                 fatalError("Loading persistent stores failed: \(error)")
             }
         }
-
-        loadContent()
+       
+        self.loadContent()
     }
     
     func loadContent() {
@@ -85,24 +84,28 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
         return cell
     }
     
-        override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.performSegue(withIdentifier: SegueIdentifiers.showLoanApplicationDetailsSegueIdentifier.rawValue, sender: self)
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, handler) in
             
-            let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { (action, view, handler) in
-                
-                let deleteLoanApplication = self.fetchedResultsController.object(at: indexPath)
-                let viewContext = self.container.viewContext
-                viewContext.delete(deleteLoanApplication)
-                do {
-                    try viewContext.save()
-                } catch {
-                    print("error saving")
-                }
+            let deleteLoanApplication = self.fetchedResultsController.object(at: indexPath)
+            let viewContext = self.container.viewContext
+            viewContext.delete(deleteLoanApplication)
+            do {
+                try viewContext.save()
+            } catch {
+                print("error saving")
             }
-            
-            deleteAction.backgroundColor = .red
-            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-            configuration.performsFirstActionWithFullSwipe = false
-            return configuration
+        }
+        
+        deleteAction.backgroundColor = .red
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+        configuration.performsFirstActionWithFullSwipe = false
+        return configuration
 
     }
     
@@ -112,13 +115,25 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
     }
     
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard let indexPath = indexPath else { return }
+        
         switch type {
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .automatic)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
         case .insert:
             tableView.insertRows(at: [newIndexPath!], with: .automatic)
+        case .update:
+            tableView.reloadRows(at: [indexPath], with: .automatic)
         default:
             break
+        }
+    }
+    
+    func saveOrUpdateLoanApplication(_ loanApplication: DraftLoanApplication) {
+        if loanApplication.uuid != nil {
+            updateLoanApplicationDetails(loanApplication)
+        } else {
+            saveLoanApplication(loanApplication)
         }
     }
     
@@ -138,8 +153,35 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
         }
     }
     
-    func updateLoanApplicationDetails(_ loanApplication: DraftLoanApplication) {
-        //TODO: fill this out with a update of an existing LoanApplication
+    func updateLoanApplicationDetails(_ proxyLoanApplication: DraftLoanApplication) {
+        
+        guard let loanApplicationUUID = proxyLoanApplication.uuid else { return }
+        
+        let viewContext = container.viewContext
+        
+        do {
+            let fetchRequest = LoanApplication.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "uuid == %@", loanApplicationUUID.uuidString)
+            
+            var matches = try container.viewContext.fetch(fetchRequest)
+            
+            var loanApplication: LoanApplication?
+            
+            if matches.count == 0 {
+               // no match so you we are inserting.
+                loanApplication = LoanApplication(context: viewContext)
+            } else {
+               // we have a match so we are updating.
+                loanApplication = matches.first
+            }
+
+            loanApplication?.populateWithDraft(proxyLoanApplication)
+            try viewContext.save()
+            
+        } catch {
+            print("issue saving context in func updateLoanApplicationDetails")
+        }
+        
     }
         
     // MARK: - Navigation
@@ -149,7 +191,6 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
         
         if let summaryDestination = segue.destination as? LoanApplicationSummaryViewController {
             if let indexPath = tableView.indexPathForSelectedRow {
-                
                 let existingLoanApplication = fetchedResultsController.object(at: indexPath)
                 let nonCoredataVersion = DraftLoanApplication(loanApplication: existingLoanApplication)
                 summaryDestination.loanApplication = nonCoredataVersion
