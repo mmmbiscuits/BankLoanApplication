@@ -23,7 +23,7 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
     
     var validationErrors: [Error] = []
     
-    private let loanToIncomeRatio: Double = 0.5
+    var viewModel: LoanApplicationViewModel!
     
     var loanApplication: DraftLoanApplication?
     
@@ -61,32 +61,22 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
         }
     }
     
-    func populateModel() {
-        if let incomeString = incomeTextField.text {
-            loanApplication?.annualIncome = Double(incomeString)
-        }
-        if let loanAmountString = loanAmountTextField.text {
-            loanApplication?.loanAmount = Double(loanAmountString)
-        }
-        
-        if let irdNumberString = irdNumberTextField.text {
-            loanApplication?.irdNumber = irdNumberString
-        }
-    }
-
     @IBAction func goToLoanSummaryButtonPressed(_ sender: Any) {
         
         //if all are valid
-        if checkValidations() {
-            populateModel()
+        
+        if viewModel.areAllFieldsValid() {
             self.performSegue(withIdentifier: SegueIdentifiers.showLoanDetailsSegueIdentifier.rawValue, sender: nil)
+
         }
         displayValidationErrors()
+        
+        
     }
     
     func displayValidationErrors() {
         //hide the label when we have no errors
-        validationErrorsLabel.isHidden = validationErrors.isEmpty
+        validationErrorsLabel.isHidden = viewModel.fieldsWithErrors.isEmpty
         
         var errorsString = ""
         
@@ -114,40 +104,6 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
             destination.saveOrUpdateLoanApplication(loanApplication, isDraft: true)
         }
     }
-
-    func checkValidations() -> Bool {
-        validationErrors = []
-        do {
-            try validateLoanRatio(income: incomeTextField.text, loanAmount: loanAmountTextField.text, loanToIncomeRatio: loanToIncomeRatio)
-            try validateIRDNumber( irdNumberTextField.text)
-        } catch {
-            validationErrors.append(error)
-        }
-        
-        return validationErrors.isEmpty
-    }
-
-//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-//        if textField == irdNumberTextField {
-//
-//            let txtAfterUpdate = textField.text
-//            
-//            txtAfterUpdate?.replacingCharacters(in:  RangeExpression(range: range), with: string)
-//            txtAfterUpdate?.replacingCharacters(in: range, with: string)
-//            txtAfterUpdate.replacingCharacters(in: range, with: string)
-//            
-//            let strippedString = txtAfterUpdate.replacingOccurrences(of: "-", with: "", options: .regularExpression)
-//            if let myInteger = Int(strippedString) {
-//                let myNumber = NSNumber(value:myInteger)
-//                irdNumber = myNumber
-//                let irdNumberFormatter = IRDNumberFormatter()
-//                irdNumberTextField.text = irdNumberFormatter.string(from: myNumber)
-//                return false
-//            }
-//           
-//        }
-//        return true
-//    }
     
     @objc func cancelButtonPressed () {
         self.presentDismissAlert()

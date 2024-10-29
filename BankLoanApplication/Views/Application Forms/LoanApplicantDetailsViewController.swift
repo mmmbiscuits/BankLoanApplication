@@ -21,6 +21,7 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         
     @IBOutlet weak var validationErrorsLabel: UILabel!
     
+    var viewModel: LoanApplicationViewModel!
     var loanApplication: DraftLoanApplication?
     
     let genderPicker: UIPickerView = UIPickerView()
@@ -33,13 +34,6 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
 
     var validationErrors: [Error] = []
     
-    func updateLoanApplication() {
-        loanApplication?.fullName = fullNameTextField.text
-        loanApplication?.email = emailTextField.text
-        loanApplication?.phoneNumber = phoneNumberTextField.text
-        loanApplication?.gender = genderTextField.text
-        loanApplication?.address = addressTextField.text
-    }
     func populateTextFields() {
         fullNameTextField.text = loanApplication?.fullName
         emailTextField.text = loanApplication?.email
@@ -83,10 +77,13 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
     }
             
     @IBAction func goToLoanDetailsButtonPressed(_ sender: Any) {
-        if allValidationsMet() {
+        
+        do {
+            try viewModel.areUserFieldValid()
             self.performSegue(withIdentifier: "goToLoanDetailsSegueId", sender: nil)
+        } catch {
+            displayValidationErrors()
         }
-        displayValidationErrors()
     }
     
     // MARK: - Navigation
@@ -96,33 +93,16 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
         //update our data
-        updateLoanApplication()
         
         //pass it to the next view
         if let destination = segue.destination as? LoanDetailsViewController {
-            destination.loanApplication = self.loanApplication
+            destination.viewModel = self.viewModel
             destination.delegate = self
         }
         
-        if let destination = segue.destination as? LoanApplicationsTableViewController, let loanApplication = loanApplication, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
-            destination.saveOrUpdateLoanApplication(loanApplication, isDraft: true)
+        if let destination = segue.destination as? LoanApplicationsTableViewController, segue.identifier == SegueIdentifiers.unwindAndSaveSegueIdentifier.rawValue {
+            destination.saveOrUpdateLoanApplication(viewModel.loanApplication, isDraft: true)
         }
-    }
-    
-    func allValidationsMet() -> Bool {
-        // clear the array
-        validationErrors = []
-        
-        do {
-            try validateFullName(fullNameTextField.text)
-            try validateEmail(emailTextField.text)
-            try validatePhoneNumber(phoneNumberTextField.text)
-            try validateGender(genderTextField.text)
-        } catch {
-            validationErrors.append(error)
-        }
-        
-        return validationErrors.isEmpty
     }
     
     func displayValidationErrors() {
