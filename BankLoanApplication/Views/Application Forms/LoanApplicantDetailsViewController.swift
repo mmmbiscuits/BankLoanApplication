@@ -60,6 +60,7 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         
         genderPicker.delegate = self
         genderPicker.dataSource = self
+        genderTextField.delegate = self
         self.genderTextField.inputView = genderPicker
         
         self.scrollView.delegate = self
@@ -169,11 +170,16 @@ extension LoanApplicantDetailsViewController: UIPickerViewDataSource, UIPickerVi
         genderTextField.text = GenderOptions.allCases[row].rawValue
         genderTextField.resignFirstResponder()
     }
+    
 }
 
 extension LoanApplicantDetailsViewController: UITextFieldDelegate, UIScrollViewDelegate {
     //clearing any existing validation display
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
+        if textField == genderTextField, let text = genderTextField.text, text.isEmpty{
+            genderTextField.text = GenderOptions.allCases.first?.rawValue
+        }
         scrollView.scrollRectToVisible(textField.frame, animated: true)
         textField.displayValidity(valid: true)
         return true

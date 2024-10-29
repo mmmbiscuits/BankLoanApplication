@@ -291,11 +291,11 @@
             <objects>
                 <viewController id="pRQ-0Z-S0T" customClass="LoanDetailsViewController" customModule="BankLoanApplication" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2IM-fH-cSw">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="rko-DS-th5">
-                                <rect key="frame" x="24" y="126.00000000000001" width="345" height="243.33333333333337"/>
+                                <rect key="frame" x="24" y="30.000000000000014" width="345" height="243.33333333333337"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Annual Income" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2CU-Aa-uhO">
                                         <rect key="frame" x="0.0" y="0.0" width="345" height="20.333333333333332"/>
@@ -304,12 +304,12 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="$0.0" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="7e9-at-jkS">
-                                        <rect key="frame" x="0.0" y="30.333333333333343" width="345" height="34"/>
+                                        <rect key="frame" x="0.0" y="30.333333333333336" width="345" height="34.000000000000007"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Desired Loan Amount" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vE8-rK-9fH">
-                                        <rect key="frame" x="0.0" y="74.333333333333343" width="345" height="20.333333333333329"/>
+                                        <rect key="frame" x="0.0" y="74.333333333333329" width="345" height="20.333333333333329"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -320,7 +320,7 @@
                                         <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="IRD Number" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u20-EW-8Vj">
-                                        <rect key="frame" x="0.0" y="148.66666666666669" width="345" height="20.333333333333343"/>
+                                        <rect key="frame" x="0.0" y="148.66666666666666" width="345" height="20.333333333333343"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -339,7 +339,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kGH-8y-Ken">
-                                <rect key="frame" x="146.66666666666666" y="756" width="100" height="44"/>
+                                <rect key="frame" x="146.66666666666666" y="746" width="100" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="HS7-a4-Wyo"/>
                                     <constraint firstAttribute="height" constant="44" id="zJP-bx-FAr"/>
@@ -382,11 +382,11 @@
             <objects>
                 <viewController id="xPr-ar-N5z" customClass="LoanApplicationSummaryViewController" customModule="BankLoanApplication" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ftl-Eb-pRt">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="cb5-1W-n92">
-                                <rect key="frame" x="45" y="130" width="303" height="399"/>
+                                <rect key="frame" x="45" y="34" width="303" height="399"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IYM-lb-IcH">
                                         <rect key="frame" x="0.0" y="0.0" width="303" height="44"/>
@@ -432,7 +432,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="XyS-H2-svx">
-                                                <rect key="frame" x="0.0" y="28.333333333333343" width="303" height="20.333333333333329"/>
+                                                <rect key="frame" x="0.0" y="28.333333333333329" width="303" height="20.333333333333329"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="748" text="Email Address:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LkS-GZ-4dg">
                                                         <rect key="frame" x="0.0" y="0.0" width="112" height="20.333333333333332"/>
@@ -492,7 +492,7 @@
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="vbg-PC-wnR">
-                                                <rect key="frame" x="0.0" y="113.33333333333331" width="303" height="20.333333333333343"/>
+                                                <rect key="frame" x="0.0" y="113.33333333333334" width="303" height="20.333333333333343"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" verticalHuggingPriority="251" horizontalCompressionResistancePriority="748" text="Address:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2qN-xQ-5NE">
                                                         <rect key="frame" x="0.0" y="0.0" width="67.333333333333329" height="20.333333333333332"/>
@@ -514,7 +514,7 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yhb-hJ-KS6">
-                                        <rect key="frame" x="0.0" y="217.66666666666669" width="303" height="44"/>
+                                        <rect key="frame" x="0.0" y="217.66666666666666" width="303" height="43.999999999999972"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loan Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NKV-H5-dT6">
                                                 <rect key="frame" x="0.0" y="0.0" width="233" height="44"/>
@@ -615,7 +615,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6YF-0S-Nd8">
-                                <rect key="frame" x="146.66666666666666" y="765.33333333333337" width="100" height="44"/>
+                                <rect key="frame" x="146.66666666666666" y="755.33333333333337" width="100" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="100" id="Rrc-VG-RYP"/>
                                     <constraint firstAttribute="height" constant="44" id="Rtr-UP-0nr"/>
@@ -736,6 +736,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
+        <segue reference="gRW-aL-T7c"/>
         <segue reference="yKJ-dr-wi8"/>
         <segue reference="5CV-xG-tZG"/>
     </inferredMetricsTieBreakers>
