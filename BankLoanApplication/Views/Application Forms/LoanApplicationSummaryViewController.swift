@@ -23,6 +23,14 @@ class LoanApplicationSummaryViewController: UIViewController {
     
     @IBOutlet weak var submitButtonOutlet: UIButton!
     
+    @IBOutlet weak var editApplicantDetailsButton: UIButton!
+    @IBOutlet weak var editLoanDetailsButton: UIButton!
+    
+    @IBOutlet var LoanSubmissionView: UIView!
+    
+    @IBOutlet weak var submissionImage: UIImageView!
+    @IBOutlet weak var submissionText: UILabel!
+    
     var loanApplication: DraftLoanApplication?
     
     var summaryState: Bool = false
@@ -33,6 +41,11 @@ class LoanApplicationSummaryViewController: UIViewController {
         // Do any additional setup after loading the view.
         submitButtonOutlet.isHidden = summaryState
 
+        if summaryState {
+            editLoanDetailsButton.isHidden = true
+            editApplicantDetailsButton.isHidden = true
+        }
+        
         if summaryState && loanApplication?.submittedDate == nil {
             self.navigationItem.rightBarButtonItems = [UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(editButtonPressed))]
             
@@ -89,7 +102,28 @@ class LoanApplicationSummaryViewController: UIViewController {
     }
     
     @IBAction func submitButtonPressed(_ sender: Any) {
-        self.performSegue(withIdentifier: SegueIdentifiers.submitAndUnwindSegueIdentifier.rawValue, sender: self)
+  
+        self.navigationController?.isNavigationBarHidden = true
+
+        if  let windowFrame = view.window?.windowScene?.windows.first?.frame {
+            self.LoanSubmissionView.frame = windowFrame
+        }
+
+        self.view.insertSubview(self.LoanSubmissionView, aboveSubview: self.view)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            
+            if let image = UIImage(systemName: "checkmark.circle")?.withRenderingMode(.alwaysTemplate) {
+                self.submissionImage.setSymbolImage(image, contentTransition: .replace)
+            }
+            self.submissionText.text = "Submitted"
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                self.performSegue(withIdentifier: SegueIdentifiers.submitAndUnwindSegueIdentifier.rawValue, sender: self)
+            })
+            
+        }
+                
     }
     
     @objc func editButtonPressed(_ sender: Any) {
@@ -98,5 +132,11 @@ class LoanApplicationSummaryViewController: UIViewController {
 
     @objc func cancelButtonPressed(_ sender: Any) {
         self.presentDismissAlert()
+    }
+    @IBAction func editApplicantDetailsPressed(_ sender: Any) {
+        
+    }
+    @IBAction func editLoanDetailsPressed(_ sender: Any) {
+        
     }
 }

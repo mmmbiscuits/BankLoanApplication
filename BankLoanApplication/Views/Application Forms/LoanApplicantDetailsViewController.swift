@@ -28,8 +28,9 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
     @IBOutlet weak var proceedToLoanDetailsButton: UIButton!
     
     @IBOutlet weak var scrollView: UIScrollView!
-//    @IBOutlet weak var nextButtonBottomSpaceConstraint: NSLayoutConstraint!
-    
+
+    @IBAction func unwindToApplicantDetails( _ segue: UIStoryboardSegue) {}
+
     var validationErrors: [Error] = []
     
     func updateLoanApplication() {

@@ -15,6 +15,8 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
     
     @IBOutlet weak var validationErrorsLabel: UILabel!
     
+    @IBAction func unwindToLoanDetails( _ segue: UIStoryboardSegue) {}
+
     weak var delegate: LoanDetailsViewControllerDelegate?
     
     private var irdNumber: NSNumber?
