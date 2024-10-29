@@ -8,7 +8,7 @@
 import UIKit
 
 protocol LoanDetailsViewControllerDelegate: AnyObject {
-    func updatedLoanApplication(didUpdate loanApplication: DraftLoanApplication)
+    func updatedLoanApplication(didUpdate loanApplicationVM: LoanApplicationViewModel)
 }
 
 class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
@@ -22,7 +22,6 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
     @IBOutlet weak var validationErrorsLabel: UILabel!
     
     var viewModel: LoanApplicationViewModel!
-    var loanApplication: DraftLoanApplication?
     
     let genderPicker: UIPickerView = UIPickerView()
         
@@ -31,38 +30,42 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
     @IBOutlet weak var scrollView: UIScrollView!
 
     @IBAction func unwindToApplicantDetails( _ segue: UIStoryboardSegue) {}
-
-    var validationErrors: [Error] = []
     
     func populateTextFields() {
-        fullNameTextField.text = loanApplication?.fullName
-        emailTextField.text = loanApplication?.email
-        phoneNumberTextField.text = loanApplication?.phoneNumber
-        genderTextField.text = loanApplication?.gender
-        addressTextField.text = loanApplication?.address
+        fullNameTextField.text = viewModel.loanApplication.fullName
+        emailTextField.text = viewModel.loanApplication.email
+        phoneNumberTextField.text = viewModel.loanApplication.phoneNumber
+        genderTextField.text = viewModel.loanApplication.gender
+        addressTextField.text = viewModel.loanApplication.address
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.title = "Applicant Details"
         // Do any additional setup after loading the view
         
-        fullNameTextField.delegate = self
-        emailTextField.delegate = self
-        phoneNumberTextField.delegate = self
-        addressTextField.delegate = self
+        if viewModel == nil {
+            viewModel = LoanApplicationViewModel(loanApplication: DraftLoanApplication())
+        }
         
+        fullNameTextField.delegate = self
+        fullNameTextField.tag = TextfieldTag.fullName.rawValue
+        emailTextField.delegate = self
+        emailTextField.tag = TextfieldTag.email.rawValue
+        phoneNumberTextField.delegate = self
+        phoneNumberTextField.tag = TextfieldTag.phoneNumber.rawValue
+        addressTextField.delegate = self
+        addressTextField.tag = TextfieldTag.address.rawValue
         genderPicker.delegate = self
         genderPicker.dataSource = self
         genderTextField.delegate = self
+        genderTextField.tag = TextfieldTag.gender.rawValue
         self.genderTextField.inputView = genderPicker
         
         self.scrollView.delegate = self
         self.scrollView.keyboardDismissMode = .onDrag
-                
-        if loanApplication == nil {
-            loanApplication = DraftLoanApplication()
-        }
+       
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .done, target: self, action: #selector(cancelButtonPressed))
         populateTextFields()
     }
@@ -77,7 +80,6 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
     }
             
     @IBAction func goToLoanDetailsButtonPressed(_ sender: Any) {
-        
         do {
             try viewModel.areUserFieldValid()
             self.performSegue(withIdentifier: "goToLoanDetailsSegueId", sender: nil)
@@ -105,26 +107,52 @@ class LoanApplicantDetailsViewController: KeyboardRespondingViewController {
         }
     }
     
+    // MARK: - Showing errors
     func displayValidationErrors() {
         //hide the label when we have no errors
-        validationErrorsLabel.isHidden = validationErrors.isEmpty
-        
         var errorsString = ""
-        
-        for error in validationErrors {
-            if let validationError = error as? ValidationError {
-                errorsString.append(contentsOf: validationError.message + "\n")
-            } else {
-                errorsString.append(contentsOf: error.localizedDescription + "\n")
+        for field in viewModel.fieldsWithErrors {
+            //checking its one of our errors
+            if viewModel.loanFields.contains([field.textfieldTag]) {
+                //highlight in red the textfield
+                textfieldDisplayError(textField: field.textfieldTag, showIssue: true)
+                //add its issue to the list
+                if let validationError = field.error as? ValidationError {
+                    errorsString.append(contentsOf: validationError.message + "\n")
+                } else {
+                    errorsString.append(contentsOf: field.error.localizedDescription + "\n")
+                }
             }
         }
-        
-        validationErrorsLabel.text = errorsString
+    }
+    
+    func textfieldDisplayError(textField:TextfieldTag, showIssue: Bool) {
+        switch textField {
+            case .fullName:
+            fullNameTextField.displayValidity(valid: showIssue)
+            case .email:
+            emailTextField.displayValidity(valid: showIssue)
+            case .phoneNumber:
+            phoneNumberTextField.displayValidity(valid: showIssue)
+            case .gender:
+            genderTextField.displayValidity(valid: showIssue)
+            case .address:
+            addressTextField.displayValidity(valid: showIssue)
+            default :
+            print("textfield display error this view shouldn't fire ")
+        }
     }
     
     @objc func cancelButtonPressed() {
         self.presentDismissAlert()
     }
+    
+    @IBAction func fullNameTextFieldChanged(_ sender: Any) {
+        viewModel.setFullName(fullNameTextField.text)
+        //clearing the red on edit.
+        textfieldDisplayError(textField: .fullName, showIssue: false)
+    }
+    
     
 }
 
@@ -147,7 +175,9 @@ extension LoanApplicantDetailsViewController: UIPickerViewDataSource, UIPickerVi
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        genderTextField.text = GenderOptions.allCases[row].rawValue
+        let selectedGender = GenderOptions.allCases[row].rawValue
+        viewModel.setGender(selectedGender)
+        genderTextField.text = selectedGender
         genderTextField.resignFirstResponder()
     }
     
@@ -164,40 +194,7 @@ extension LoanApplicantDetailsViewController: UITextFieldDelegate, UIScrollViewD
         textField.displayValidity(valid: true)
         return true
     }
-    
-    // run validation after textfield edited.
-    func textFieldDidEndEditing(_ textField: UITextField) {
         
-        switch textField {
-        case fullNameTextField:
-            do {
-                try validateFullName(fullNameTextField.text)
-            } catch {
-                fullNameTextField.displayValidity(valid: false)
-            }
-        case emailTextField:
-            do {
-                try validateEmail(emailTextField.text)
-            } catch {
-                emailTextField.displayValidity(valid: false)
-            }
-        case phoneNumberTextField:
-            do {
-                try validatePhoneNumber(phoneNumberTextField.text)
-            } catch {
-                textField.displayValidity(valid: false)
-            }
-        case genderTextField:
-            do {
-                try validateGender(genderTextField.text)
-            } catch {
-                genderTextField.displayValidity(valid: false)
-            }
-        default:
-            return
-        }
-    }
-    
     // helping user when returning to go to the next field.
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
@@ -212,13 +209,25 @@ extension LoanApplicantDetailsViewController: UITextFieldDelegate, UIScrollViewD
         }
         return true
     }
-    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        switch textField {
+        case fullNameTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .fullName)
+        case emailTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .email)
+        case phoneNumberTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .phoneNumber)
+        case genderTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .gender)
+        default :
+            return ()
+        }
+    }
 }
 
 extension LoanApplicantDetailsViewController: LoanDetailsViewControllerDelegate {
-    
-    func updatedLoanApplication(didUpdate loanApplication: DraftLoanApplication) {
-        self.loanApplication = loanApplication
+    func updatedLoanApplication(didUpdate loanApplicationVM: LoanApplicationViewModel) {
+        self.viewModel = loanApplicationVM
     }
 }
  

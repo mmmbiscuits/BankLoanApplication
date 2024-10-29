@@ -96,7 +96,7 @@ class LoanApplicationSummaryViewController: UIViewController {
         
         if let editDestination = segue.destination as? UINavigationController, let loanApplication = loanApplication {
             if let LoanApplicationDetails = editDestination.topViewController as? LoanApplicantDetailsViewController {
-                LoanApplicationDetails.loanApplication = loanApplication
+                LoanApplicationDetails.viewModel = LoanApplicationViewModel(loanApplication: loanApplication)
             }
         }
     }

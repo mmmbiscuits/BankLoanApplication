@@ -49,7 +49,7 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
     }
     
     func populateTextFields() {
-        if let incomeString = loanApplication?.annualIncome {
+        if let incomeString = viewModel.loanApplication.annualIncome {
             incomeTextField.text = String(incomeString)
         }
         if let loanAmountString = loanApplication?.loanAmount {
@@ -70,8 +70,6 @@ class LoanDetailsViewController: KeyboardRespondingViewController {
 
         }
         displayValidationErrors()
-        
-        
     }
     
     func displayValidationErrors() {
@@ -121,22 +119,17 @@ extension LoanDetailsViewController: UITextFieldDelegate {
     // run validation after textfield edited.
     func textFieldDidEndEditing(_ textField: UITextField) {
         //update model
-        populateModel()
         //delegate it back
         if let loanApplication = loanApplication {
-            self.delegate?.updatedLoanApplication(didUpdate: loanApplication)
-        }
+            self.delegate?.updatedLoanApplication(didUpdate: self.viewModel)        }
         
         switch textField {
-//        case incomeTextField:
-//        case loanAmountTextField:
         case irdNumberTextField:
-            do {
-                try validateIRDNumber(textField.text)
-            } catch {
-                textField.displayValidity(valid: false)
-            }
-            
+            viewModel.testValidation(validate: true, textfieldTag: .irdNumber)
+        case loanAmountTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .loanAmount)
+        case incomeTextField:
+            viewModel.testValidation(validate: true, textfieldTag: .loanAmount)
         default:
             return
         }
@@ -152,6 +145,3 @@ extension LoanDetailsViewController: UITextFieldDelegate {
     }
     
 }
-
-
-

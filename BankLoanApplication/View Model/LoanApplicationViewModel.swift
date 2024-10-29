@@ -28,6 +28,13 @@ class LoanApplicationViewModel {
         self.loanApplication = loanApplication
     }
     
+    var userFields: [TextfieldTag] {
+        return [.fullName,.phoneNumber, .email, .gender, .address]
+    }
+    var loanFields: [TextfieldTag] {
+        return [.loanAmount, .annualIncome, .irdNumber]
+    }
+    
     func areAllFieldsValid() -> Bool {
         
         do {
@@ -58,7 +65,7 @@ class LoanApplicationViewModel {
     
     
     //MARK: - setting
-    func setFullName(_ fullName: String, validate: Bool = false) {
+    func setFullName(_ fullName: String?, validate: Bool = false) {
         loanApplication.fullName = fullName
         testValidation(validate: validate, textfieldTag: .fullName)
     }

@@ -202,7 +202,7 @@ class LoanApplicationsTableViewController: UITableViewController, NSFetchedResul
             }
         }
         if let newApplicationDestination = segue.destination as? LoanApplicantDetailsViewController {
-            newApplicationDestination.loanApplication = DraftLoanApplication()
+            newApplicationDestination.viewModel = LoanApplicationViewModel(loanApplication: DraftLoanApplication())
         }
     }
 
